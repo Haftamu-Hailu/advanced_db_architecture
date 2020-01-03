@@ -1,0 +1,59 @@
+import heapq
+import random
+import threading
+import time
+
+# k threads
+k = 2
+
+# Generate n numbers for each thread to process.
+n = 10000000
+def GenerateNumbers(a, b):
+    numbers = []
+    for i in range(n):
+        numbers.append(random.randint(a, b))
+    return numbers
+    
+    start = time.time()
+class SortingThread(threading.Thread):
+    def __init__(self):
+        super(SortingThread, self).__init__()
+        self.numbers = GenerateNumbers(1, 100)
+
+    def run(self):
+        self.numbers.sort()
+if __name__ == '__main__':
+    # Parallel sort with multiple threads.
+    #
+    sortingThreads = []
+    for i in range(k):
+        sortingThreads.append(SortingThread())
+    for i in range(k):
+        sortingThreads[i].start()
+    for i in range(k):
+        sortingThreads[i].join()
+        print (i , sortingThreads[i].numbers)
+
+    # Use heap to output the final sorted list.
+    # fill the heap with several numbers firstly
+    theHeap = []
+    for i in range(1):
+        for t in range(len(sortingThreads)):
+            number = sortingThreads[t].numbers[i]
+            heapq.heappush(theHeap, number)
+
+    sortedNumbers = []
+ # In the while loop, people may replace the code by reading file routines.
+    # Since IO is always the bottleneck, so single thread should be enough.
+p = 1
+while (len(theHeap) > 0):
+    if p < len(sortingThreads[t].numbers):
+        for t in range(len(sortingThreads)):
+            number = sortingThreads[t].numbers[p]
+            heapq.heappush(theHeap, number)
+        p += 1
+    sortedNumbers.append(heapq.heappop(theHeap))
+
+    # Done
+end = time.time()
+print (end-start)
